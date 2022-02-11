@@ -27,6 +27,12 @@ class DbSettings(BaseSettings):
                     )
                 )
             except pydantic.error_wrappers.ValidationError as pyvaler:
+                print(
+                    """Validation Error:\nMissing at least one of the following required fields:
+                    \nDATABASE_HOST
+                    \nDATABASE_PORT
+                    \nDATABASE_NAME."""
+                )
                 raise pyvaler
 
         else:
