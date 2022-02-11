@@ -9,7 +9,7 @@ DATABASE_DSN = "postgresql+psycopg2://postgres:postgres@10.0.0.2:5000/skate_tric
 
 
 def test_database_settings_dsn_builder() -> None:
-    os.environ["DATABASE_HOST"] = "postgres"
+    os.environ["DATABASE_USER"] = "postgres"
     os.environ["DATABASE_PASS"] = "postgres"
     os.environ["DATABASE_HOST"] = "10.0.0.2"
     os.environ["DATABASE_PORT"] = "5000"
