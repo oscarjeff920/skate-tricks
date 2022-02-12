@@ -1,5 +1,9 @@
 import pydantic.error_wrappers
+from psycopg2.extras import DictCursor
 from pydantic import BaseSettings, PostgresDsn, validator, typing
+from fastapi import Depends
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 class DbSettings(BaseSettings):
@@ -41,3 +45,12 @@ class DbSettings(BaseSettings):
 
 def get_db_settings() -> DbSettings:
     return DbSettings()
+
+
+def get_db_session(db_settings: DbSettings = Depends(get_db_settings)) -> DictCursor:
+    engine = create_engine(db_settings.DATABASE_DSN)
+    db = sessionmaker(autoflush=False, autocommit=False, bind=engine)()
+    try:
+        yield db
+    finally:
+        db.close()
