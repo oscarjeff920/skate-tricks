@@ -77,7 +77,8 @@ def post_variation_trick_fundamentals(
     if db_fundamental_trick is None:
         raise fastapi.HTTPException(
             status_code=404,
-            detail=f"The fundamental trick {fundamental_trick_name} is either not fundamental, or doesn't exist in the database.",
+            detail=f"""The fundamental trick {fundamental_trick_name} is either not fundamental,
+            or doesn't exist in the database.""",
         )
     db_trick_fundamentals = schemas.TrickFundamentalsCreate(
         trick_name=trick_name.lower(),
