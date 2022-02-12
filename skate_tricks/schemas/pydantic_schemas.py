@@ -22,11 +22,11 @@ class SkateTricks(SkateTricksBase):
 
 
 # Associative
-class BasicTricksComboCreate(BaseModel):
+class TrickFundamentalsCreate(BaseModel):
     trick_id: int
-    basic_trick_id: int
+    fundamental_trick_id: int
 
 
-class BasicTrickCombo(BaseModel):
+class TrickFundamentals(BaseModel):
     trick_name: str
-    basic_trick_name: str
+    fundamental_trick_name: str

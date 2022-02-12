@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from skate_tricks.constants.enums import FlipType, RotationDirection, SpinDegrees
 
 # Associative Tables
-combo_tricks = Table(
+variation_tricks = Table(
     "combo_tricks",
     base.metadata,
     Column(
@@ -15,7 +15,7 @@ combo_tricks = Table(
         primary_key=True,
     ),
     Column(
-        "basic_trick_id",
+        "fundamental_trick_id",
         Integer,
         ForeignKey("skate_tricks.id", onupdate="CASCADE", ondelete="CASCADE"),
         primary_key=True,
@@ -29,7 +29,7 @@ class SkateTricks(base):
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, index=True, unique=True, nullable=False)
-    basic = Column(Boolean, index=True, nullable=False)
+    fundamental = Column(Boolean, index=True, nullable=False)
     flip = Column(Enum(FlipType), nullable=True)
     board_rotation = Column(Enum(RotationDirection), nullable=True)
     board_spin = Column(Enum(SpinDegrees), nullable=True)
@@ -37,6 +37,6 @@ class SkateTricks(base):
     body_spin = Column(Enum(SpinDegrees), nullable=True)
 
     # Relationships
-    basic_tricks_combo = relationship(
-        "SkateTricks", secondary=combo_tricks, back_populates="basic_tricks_combo"
+    combo_of_fundamental = relationship(
+        "SkateTricks", secondary=variation_tricks, back_populates="combo_of_fundamental"
     )
