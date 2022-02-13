@@ -1,13 +1,15 @@
 from sqlalchemy import Column, Integer, Boolean, Enum, Text, Table, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base as base
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
 from skate_tricks.constants.enums import FlipType, RotationDirection, SpinDegrees
 
+Base = declarative_base()
+
 # Associative Tables
 variation_tricks = Table(
     "combo_tricks",
-    base.metadata,
+    Base.metadata,
     Column(
         "trick_id",
         Integer,
@@ -24,7 +26,7 @@ variation_tricks = Table(
 
 
 # Tables
-class SkateTricks(base):
+class SkateTricks(Base):  # type: ignore
     __tablename__ = "skate_tricks"
 
     id = Column(Integer, primary_key=True)
@@ -36,7 +38,7 @@ class SkateTricks(base):
     body_rotation = Column(Enum(RotationDirection), nullable=True)
     body_spin = Column(Enum(SpinDegrees), nullable=True)
 
-    # Relationships
-    combo_of_fundamental = relationship(
-        "SkateTricks", secondary=variation_tricks, back_populates="combo_of_fundamental"
-    )
+    # # Relationships  # TODO fix relationship to work
+    # combo_of_fundamental = relationship(
+    #     "SkateTricks", secondary=variation_tricks, back_populates="combo_of_fundamental"
+    # )

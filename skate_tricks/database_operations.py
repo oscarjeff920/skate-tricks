@@ -1,19 +1,19 @@
 import fastapi
 from sqlalchemy.orm import Session
 from pydantic import typing
-from schemas import pydantic_schemas as schemas
-from schemas import postgres_models as models
+from skate_tricks.schemas import pydantic_schemas as json_schemas
+from skate_tricks.schemas import postgres_models as models
 
 
 def get_all_tricks(db: Session) -> typing.List[models.SkateTricks]:
     db_query = (
         db.query(models.SkateTricks)
-        .order_by(models.SkateTricks.fundamental)
-        .order_by(models.SkateTricks.flip)
-        .order_by(models.SkateTricks.board_rotation)
-        .order_by(models.SkateTricks.board_spin)
-        .order_by(models.SkateTricks.body_rotation)
-        .order_by(models.SkateTricks.body_spin)
+        .order_by(models.SkateTricks.fundamental.desc())
+        .order_by(models.SkateTricks.flip.desc())
+        .order_by(models.SkateTricks.board_rotation.desc())
+        .order_by(models.SkateTricks.board_spin.desc())
+        .order_by(models.SkateTricks.body_rotation.desc())
+        .order_by(models.SkateTricks.body_spin.desc())
         .all()
     )
     return db_query
@@ -21,7 +21,7 @@ def get_all_tricks(db: Session) -> typing.List[models.SkateTricks]:
 
 def post_new_trick(
     db: Session,
-    trick: schemas.SkateTricksBase,
+    trick: json_schemas.SkateTricksBase,
     fundamental_tricks: typing.Optional[typing.List[str]],
 ) -> models.SkateTricks:
     db_new_trick = models.SkateTricks(
@@ -56,7 +56,7 @@ def post_new_trick(
 
 def post_variation_trick_fundamentals(
     db: Session, trick_name: str, fundamental_trick_name: str
-) -> schemas.TrickFundamentalsCreate:
+) -> json_schemas.TrickFundamentalsCreate:
     db_trick = (
         db.query(models.SkateTricks)
         .filter(models.SkateTricks.name == trick_name.lower())
@@ -80,7 +80,7 @@ def post_variation_trick_fundamentals(
             detail=f"""The fundamental trick {fundamental_trick_name} is either not fundamental,
             or doesn't exist in the database.""",
         )
-    db_trick_fundamentals = schemas.TrickFundamentalsCreate(
+    db_trick_fundamentals = json_schemas.TrickFundamentalsCreate(
         trick_name=trick_name.lower(),
         fundamental_trick_name=fundamental_trick_name.lower(),
     )
