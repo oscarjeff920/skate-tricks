@@ -8,7 +8,7 @@ Base = declarative_base()
 
 # Associative Tables
 variation_tricks = Table(
-    "combo_tricks",
+    "variation_tricks",
     Base.metadata,
     Column(
         "trick_id",
@@ -38,7 +38,11 @@ class SkateTricks(Base):  # type: ignore
     body_rotation = Column(Enum(RotationDirection), nullable=True)
     body_spin = Column(Enum(SpinDegrees), nullable=True)
 
-    # # Relationships  # TODO fix relationship to work
-    # combo_of_fundamental = relationship(
-    #     "SkateTricks", secondary=variation_tricks, back_populates="combo_of_fundamental"
-    # )
+    # Relationships
+    fundamental_tricks = relationship(
+        "SkateTricks",
+        secondary=variation_tricks,
+        primaryjoin=variation_tricks.c.trick_id == id,
+        secondaryjoin=variation_tricks.c.fundamental_trick_id == id,
+        backref="variation_trick",
+    )
