@@ -26,7 +26,7 @@ def post_new_trick(
 ) -> models.SkateTricks:
     db_new_trick = models.SkateTricks(
         name=trick.name,
-        basic=trick.basic,
+        fundamental=trick.fundamental,
         flip=trick.flip,
         board_rotation=trick.board_rotation,
         board_spin=trick.board_spin,

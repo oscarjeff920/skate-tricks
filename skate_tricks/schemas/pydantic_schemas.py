@@ -6,7 +6,7 @@ from skate_tricks.constants.enums import RotationDirection, FlipType, SpinDegree
 
 class SkateTricksBase(BaseModel):
     name: str
-    basic: bool
+    fundamental: bool
     flip: FlipType
     board_rotation: Optional[RotationDirection]
     board_spin: Optional[SpinDegrees]
