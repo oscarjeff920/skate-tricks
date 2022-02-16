@@ -22,7 +22,7 @@ def get_all_tricks(db: Session) -> typing.List[models.SkateTricks]:
 def post_new_trick(
     db: Session,
     trick: json_schemas.SkateTricksBase,
-    fundamental_tricks: typing.Optional[typing.List[str]],
+    fundamental_tricks: typing.Optional[typing.List[str]] = None,
 ) -> models.SkateTricks:
     db_new_trick = models.SkateTricks(
         name=trick.name,

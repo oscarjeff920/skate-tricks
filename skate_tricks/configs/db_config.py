@@ -3,7 +3,11 @@ from psycopg2.extras import DictCursor
 from pydantic import BaseSettings, PostgresDsn, validator, typing
 from fastapi import Depends
 from sqlalchemy import create_engine
+from sqlalchemy_utils import database_exists, create_database
+from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.orm import sessionmaker
+
+from skate_tricks.schemas.postgres_models import Base
 
 
 class DbSettings(BaseSettings):
@@ -51,6 +55,15 @@ def get_db_session(db_settings: DbSettings = Depends(get_db_settings)) -> DictCu
     engine = create_engine(db_settings.DATABASE_DSN)
     db = sessionmaker(autoflush=False, autocommit=False, bind=engine)()
     try:
+        print("database yielded")
+        Base.metadata.create_all(bind=engine)
         yield db
+    # except psycopg2.exc.OperationalError as operr:
+    #     if not database_exists(db_settings.DATABASE_DSN):
+    #         create_database(db_settings.DATABASE_DSN)
+    #
+    #         print("database created")
+    #     else:
+    #         raise operr
     finally:
         db.close()
