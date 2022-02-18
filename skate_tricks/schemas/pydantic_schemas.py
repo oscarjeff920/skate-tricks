@@ -1,17 +1,21 @@
 from pydantic import BaseModel
-from pydantic.typing import Optional
+from pydantic.typing import Optional, List
 
 from skate_tricks.constants.enums import RotationDirection, FlipType, SpinDegrees
 
 
 class SkateTricksBase(BaseModel):
     name: str
-    basic: bool
+    fundamental: bool
     flip: FlipType
-    board_rotation: Optional[RotationDirection]
-    board_spin: Optional[SpinDegrees]
-    body_rotation: Optional[RotationDirection]
-    body_spin: Optional[SpinDegrees]
+    board_rotation: Optional[RotationDirection] = None
+    board_spin: Optional[SpinDegrees] = None
+    body_rotation: Optional[RotationDirection] = None
+    body_spin: Optional[SpinDegrees] = None
+
+
+class SkateTricksCreate(SkateTricksBase):
+    fundamental_tricks: Optional[List[str]] = None
 
 
 class SkateTricks(SkateTricksBase):

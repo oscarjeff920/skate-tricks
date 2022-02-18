@@ -14,8 +14,10 @@ repos:
         args: ["--config-file=mypy_setup.cfg"]
         language: python
         types: [python]
+        exclude: ^alembic
       - id: black
         name: black
         entry: black
         language: python
         types: [python]
+        exclude: ^alembic
