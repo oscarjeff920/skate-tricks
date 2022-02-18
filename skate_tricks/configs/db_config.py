@@ -9,9 +9,9 @@ from sqlalchemy.orm import sessionmaker
 class DbSettings(BaseSettings):
     DATABASE_USER: str = "postgres"
     DATABASE_PASS: str = "postgres"
-    DATABASE_HOST: str
-    DATABASE_PORT: str
-    DATABASE_NAME: str
+    DATABASE_HOST: str = "127.0.0.1"
+    DATABASE_PORT: str = "5432"
+    DATABASE_NAME: str = "skate_tricks_db_mock"
     DATABASE_DSN: typing.Optional[PostgresDsn] = None
 
     @validator("DATABASE_DSN")
