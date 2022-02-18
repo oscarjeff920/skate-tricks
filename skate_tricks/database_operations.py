@@ -1,8 +1,8 @@
 import fastapi
 from sqlalchemy.orm import Session
 from pydantic import typing
-from schemas import pydantic_schemas as schemas
-from schemas import postgres_models as models
+from skate_tricks.schemas import pydantic_schemas as json_schemas
+from skate_tricks.schemas import postgres_models as models
 
 
 def get_all_tricks(db: Session) -> typing.List[models.SkateTricks]:
@@ -21,12 +21,12 @@ def get_all_tricks(db: Session) -> typing.List[models.SkateTricks]:
 
 def post_new_trick(
     db: Session,
-    trick: schemas.SkateTricksBase,
+    trick: json_schemas.SkateTricksBase,
     fundamental_tricks: typing.Optional[typing.List[str]],
 ) -> models.SkateTricks:
     db_new_trick = models.SkateTricks(
         name=trick.name,
-        basic=trick.basic,
+        fundamental=trick.fundamental,
         flip=trick.flip,
         board_rotation=trick.board_rotation,
         board_spin=trick.board_spin,
@@ -56,7 +56,7 @@ def post_new_trick(
 
 def post_variation_trick_fundamentals(
     db: Session, trick_name: str, fundamental_trick_name: str
-) -> schemas.TrickFundamentalsCreate:
+) -> json_schemas.TrickFundamentalsCreate:
     db_trick = (
         db.query(models.SkateTricks)
         .filter(models.SkateTricks.name == trick_name.lower())
@@ -80,7 +80,7 @@ def post_variation_trick_fundamentals(
             detail=f"""The fundamental trick {fundamental_trick_name} is either not fundamental,
             or doesn't exist in the database.""",
         )
-    db_trick_fundamentals = schemas.TrickFundamentalsCreate(
+    db_trick_fundamentals = json_schemas.TrickFundamentalsCreate(
         trick_name=trick_name.lower(),
         fundamental_trick_name=fundamental_trick_name.lower(),
     )
