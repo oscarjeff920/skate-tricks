@@ -20,9 +20,7 @@ def get_all_tricks(db: Session) -> typing.List[models.SkateTricks]:
 
 
 def post_new_trick(
-    db: Session,
-    trick: json_schemas.SkateTricksBase,
-    fundamental_tricks: typing.Optional[typing.List[str]],
+    db: Session, trick: json_schemas.SkateTricksCreate
 ) -> models.SkateTricks:
     db_new_trick = models.SkateTricks(
         name=trick.name,
@@ -35,8 +33,8 @@ def post_new_trick(
     )
     db.add(db_new_trick)
     db.flush()
-    if fundamental_tricks is not None:
-        for fundamental_trick in fundamental_tricks:
+    if trick.fundamental_tricks is not None:
+        for fundamental_trick in trick.fundamental_tricks:
             db_trick = (
                 db.query(models.SkateTricks)
                 .filter(models.SkateTricks.name == fundamental_trick)

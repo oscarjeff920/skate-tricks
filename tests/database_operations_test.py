@@ -4,9 +4,10 @@ import typing
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from skate_tricks.configs.db_config import get_db_settings, create_db, get_db_session
-from skate_tricks.database_operations import get_all_tricks
+from skate_tricks.configs.db_config import get_db_settings, create_db
+from skate_tricks.database_operations import get_all_tricks, post_new_trick
 from skate_tricks.schemas import postgres_models as models
+from skate_tricks.schemas import pydantic_schemas as json_schemas
 
 os.environ["DATABASE_HOST"] = "127.0.0.1"
 os.environ["DATABASE_PORT"] = "5432"
@@ -14,13 +15,15 @@ os.environ["DATABASE_NAME"] = "skate_tricks_db_mock"
 
 create_db()
 
+# TODO: problem with alembic and dropping/recreating enums through upgrades and downgrades...
 
-def session_test(func):  # type: ignore # TODO: work out type
+
+def pass_test_session(func):  # type: ignore # TODO: work out type
     def pass_conn():  # type: ignore # TODO: work out type
         engine = create_engine(get_db_settings().DATABASE_DSN)
         db = sessionmaker(autoflush=False, autocommit=False, bind=engine)()
         try:
-            output = func(db)
+            output = func(db=db)
         finally:
             db.close()
         return output
@@ -29,9 +32,9 @@ def session_test(func):  # type: ignore # TODO: work out type
 
 
 def test_database_empty() -> None:
-    @session_test
-    def query_games(*args) -> typing.List:  # type: ignore # TODO: work out type
-        db = args[0]
+    @pass_test_session
+    def query_games(**kwargs) -> typing.List:  # type: ignore # TODO: work out type
+        db = kwargs["db"]
         tricks = get_all_tricks(db)
         return tricks
 
@@ -39,17 +42,33 @@ def test_database_empty() -> None:
     assert db_tricks == []
 
 
-def post_to_database() -> None:
-    @session_test
-    def post_trick(*args) -> models.SkateTricks:  # type: ignore # TODO: work out type
-        pass
+def test_post_to_database() -> None:
+    @pass_test_session
+    def post_trick(**kwargs):  # type: ignore # TODO: work out type
+        db = kwargs["db"]
+        trick = json_schemas.SkateTricksCreate(
+            name="ollie", fundamental=True, flip="ollie"
+        )
+        db_trick = post_new_trick(db=db, trick=trick)
+
+        query = (
+            db.query(models.SkateTricks)
+            .filter(models.SkateTricks.name == db_trick.name)
+            .one_or_none()
+        )
+        return db_trick, query
+
+    db_trick, db_query = post_trick()
+    assert db_query != []
+    assert db_query.name == db_trick.name
 
 
-def test_database_empty2() -> None:
-    engine = create_engine(url=get_db_settings().DATABASE_DSN)
-    db = sessionmaker(bind=engine)()
-    try:
-        skate_tricks = get_all_tricks(db=db)
-        assert skate_tricks == []
-    finally:
-        db.close()
+def test_get_all_tricks() -> None:
+    @pass_test_session
+    def query_tricks(**kwargs) -> typing.List[models.SkateTricks]:  # type: ignore # TODO: work out type
+        db = kwargs["db"]
+        tricks = get_all_tricks(db=db)
+        return tricks
+
+    db_tricks = query_tricks()
+    assert db_tricks != []
