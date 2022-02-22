@@ -2,4 +2,4 @@
 .*cache
 *__pycache__
 thoughts*.txt
-alembic/*
+migrations
