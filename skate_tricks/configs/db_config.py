@@ -4,6 +4,7 @@ from pydantic import BaseSettings, PostgresDsn, validator, typing
 from fastapi import Depends
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy_utils import database_exists, create_database
 
 
 class DbSettings(BaseSettings):
@@ -45,6 +46,11 @@ class DbSettings(BaseSettings):
 
 def get_db_settings() -> DbSettings:
     return DbSettings()
+
+
+def create_db() -> None:
+    if not database_exists(get_db_settings().DATABASE_DSN):
+        create_database(get_db_settings().DATABASE_DSN)
 
 
 def get_db_session(db_settings: DbSettings = Depends(get_db_settings)) -> DictCursor:

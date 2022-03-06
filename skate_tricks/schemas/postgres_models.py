@@ -9,7 +9,7 @@ Base = declarative_base()
 
 # Associative Tables
 variation_tricks = Table(
-    "combo_tricks",
+    "variation_tricks",
     Base.metadata,
     Column(
         "trick_id",
@@ -41,5 +41,9 @@ class SkateTricks(Base):  # type: ignore
 
     # Relationships
     combo_of_fundamental = relationship(
-        "SkateTricks", secondary=variation_tricks, back_populates="combo_of_fundamental"
+        "SkateTricks",
+        secondary=variation_tricks,
+        primaryjoin=variation_tricks.c.trick_id == id,
+        secondaryjoin=variation_tricks.c.fundamental_trick_id == id,
+        backref="variation_trick",
     )
