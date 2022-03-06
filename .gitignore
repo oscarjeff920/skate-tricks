@@ -2,4 +2,8 @@
 .*cache
 *__pycache__
 thoughts*.txt
-migrations
+migrations/*
+migrations/versions/*
+!migrations/versions
+!migrations/versions/2e288f504e59_first_revision.py
+!migrations/env.py

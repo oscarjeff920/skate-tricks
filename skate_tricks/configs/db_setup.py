@@ -8,7 +8,10 @@ from alembic.config import Config
 alembic_cfg = Config()
 
 # For some reason the alembic path is not automatically directed to the project root
-project_root = os.path.abspath(os.path.dirname(os.path.dirname(os.getcwd())))
+# This needs to be edited as depending on where the functions are run, the path will or wont be
+# directed to /migrations
+# TODO: need to make path to root VV be relative
+project_root = os.path.dirname(os.getcwd())
 alembic_cfg.set_main_option("script_location", f"{project_root}/migrations")
 
 os.environ["DATABASE_HOST"] = "127.0.0.1"
